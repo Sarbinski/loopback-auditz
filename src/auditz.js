@@ -167,15 +167,15 @@ export default (Model, bootOptions = {}) => {
         if (groups && Array.isArray(groups)) {
             let count = 0;
             if (!(ctx.options && ctx.options.delete)) {
-                groups.forEach(function (group) {
-                    createOrUpdateRevision(ctx, group, currentUser, ipForwarded, ip, function () {
-                        count += 1;
-                        if (count === groups.length) {
-                            next();
-                        }
-                    });
+              groups.forEach(function (group) {
+                createOrUpdateRevision(ctx, group, currentUser, ipForwarded, ip, function () {
+                  count += 1;
+                  if (count === groups.length) {
+                      next();
+                  }
                 });
-                return;
+              });
+              return;
             }
         }
         next();
@@ -298,9 +298,11 @@ export default (Model, bootOptions = {}) => {
     });
     debug(data);
 
+    let id = ctx.instance ? ctx.instance.id : ctx.options.oldInstance.id;
+
     let rec = {
       table_name: Model.modelName,
-      row_id: ctx.instance.id,
+      row_id: id,
       new: data,
       user: currentUser,
       ip: ip,

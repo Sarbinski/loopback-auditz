@@ -347,9 +347,11 @@ exports.default = function (Model) {
     });
     debug(data);
 
+    var id = ctx.instance ? ctx.instance.id : ctx.options.oldInstance.id;
+
     var rec = {
       table_name: Model.modelName,
-      row_id: ctx.instance.id,
+      row_id: id,
       new: data,
       user: currentUser,
       ip: ip,
