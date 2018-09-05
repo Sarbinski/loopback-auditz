@@ -531,7 +531,7 @@ exports.default = function (Model) {
         return typeof callback === 'function' ? callback(null, result) : result;
       }).then(function (result) {
         if (hardDelete) {
-          _deleteById(id, opt);
+          _deleteById(id, opt, function () {});
         }
       }).catch(function (error) {
         return typeof callback === 'function' ? callback(error) : _promise2.default.reject(error);

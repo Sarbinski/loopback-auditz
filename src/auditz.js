@@ -475,7 +475,7 @@ export default (Model, bootOptions = {}) => {
         .then(result => (typeof callback === 'function') ? callback(null, result) : result)
         .then((result) => {
           if (hardDelete) {
-            _deleteById(id, opt);
+            _deleteById(id, opt, function(){});
           }
         })
         .catch(error => (typeof callback === 'function') ? callback(error) : Promise.reject(error));
