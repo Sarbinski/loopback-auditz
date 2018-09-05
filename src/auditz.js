@@ -448,6 +448,7 @@ export default (Model, bootOptions = {}) => {
   });
 
   if (options.softDelete) {
+    const _deleteById = Model.deleteById;
     Model.destroyAll = function softDestroyAll(where, cb) {
       let query = where || {};
       let callback = cb;
@@ -463,7 +464,7 @@ export default (Model, bootOptions = {}) => {
     Model.remove = Model.destroyAll;
     Model.deleteAll = Model.destroyAll;
 
-    Model.destroyById = function softDestroyById(id, opt, cb) {
+    Model.destroyById = function softDestroyById(id, opt, cb, hardDelete) {
       const callback = (cb === undefined && typeof opt === 'function') ? opt : cb;
       let newOpt = {delete: true};
       if (typeof opt === 'object') {
@@ -472,6 +473,11 @@ export default (Model, bootOptions = {}) => {
 
       return Model.updateAll({ [idName]: id }, { ...scrubbed}, newOpt)
         .then(result => (typeof callback === 'function') ? callback(null, result) : result)
+        .then((result) => {
+          if (hardDelete) {
+            _deleteById(id, opt);
+          }
+        })
         .catch(error => (typeof callback === 'function') ? callback(error) : Promise.reject(error));
     };
 

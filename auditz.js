@@ -502,6 +502,7 @@ exports.default = function (Model) {
   });
 
   if (options.softDelete) {
+    var _deleteById = Model.deleteById;
     Model.destroyAll = function softDestroyAll(where, cb) {
       var query = where || {};
       var callback = cb;
@@ -519,7 +520,7 @@ exports.default = function (Model) {
     Model.remove = Model.destroyAll;
     Model.deleteAll = Model.destroyAll;
 
-    Model.destroyById = function softDestroyById(id, opt, cb) {
+    Model.destroyById = function softDestroyById(id, opt, cb, hardDelete) {
       var callback = cb === undefined && typeof opt === 'function' ? opt : cb;
       var newOpt = { delete: true };
       if ((typeof opt === 'undefined' ? 'undefined' : (0, _typeof3.default)(opt)) === 'object') {
@@ -528,6 +529,10 @@ exports.default = function (Model) {
 
       return Model.updateAll((0, _defineProperty3.default)({}, idName, id), (0, _extends4.default)({}, scrubbed), newOpt).then(function (result) {
         return typeof callback === 'function' ? callback(null, result) : result;
+      }).then(function (result) {
+        if (hardDelete) {
+          _deleteById(id, opt);
+        }
       }).catch(function (error) {
         return typeof callback === 'function' ? callback(error) : _promise2.default.reject(error);
       });
